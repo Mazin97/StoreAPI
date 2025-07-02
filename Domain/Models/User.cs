@@ -1,0 +1,41 @@
+﻿using Domain.Enums;
+using Domain.Extensions;
+
+namespace Domain.Models;
+
+public sealed class User(string name, string document, string email, string password, UserTypeEnum type)
+{
+    public int Id { get; private set; } = default;
+
+    public string Name { get; private set; } = name;
+
+    public string Document { get; private set; } = document;
+
+    public string Email { get; private set; } = email;
+
+    public string Password { get; private set; } = password;
+
+    public UserTypeEnum Type { get; private set; } = type;
+
+    public double Balance { get; private set; } = default;
+
+    public void Validate()
+    {
+        if (string.IsNullOrWhiteSpace(Name))
+            throw new ArgumentNullException(nameof(Name));
+
+        if (string.IsNullOrWhiteSpace(Document)) throw new ArgumentNullException(nameof(Document));
+
+        if (!DocumentHelper.IsValid(Document)) throw new ArgumentException($"Invalid document");
+
+        if (string.IsNullOrWhiteSpace(Email)) throw new ArgumentNullException(nameof(Email));
+
+        if (!EmailHelper.IsValid(Email)) throw new ArgumentException("Invalid email");
+
+        if (string.IsNullOrWhiteSpace(Password)) throw new ArgumentNullException(nameof(Password));
+
+        if (!PasswordHelper.IsValid(Password)) throw new ArgumentException("Invalid password, a password must contains at least 8 characters, a special character, upper and lower case letters");
+
+        if (Type == UserTypeEnum.None) throw new ArgumentNullException(nameof(Type));
+    }
+}
