@@ -3,14 +3,9 @@ using Domain.Interfaces;
 
 namespace Service.Store;
 
-public class StoreService : IStoreService
+public class StoreService(IStoreRepository repository) : IStoreService
 {
-    private readonly IStoreRepository _repository;
-
-    public StoreService(IStoreRepository repository)
-    {
-        _repository = repository;
-    }
+    private readonly IStoreRepository _repository = repository;
 
     public Task AddBalance(double value, int userId)
     {
@@ -21,6 +16,9 @@ public class StoreService : IStoreService
     {
         user.Validate();
         user.HashPassword();
+
+        var existingUser = await _repository.FindUserByDocumentOrEmailAsync(user.Document, user.Email);
+        if (existingUser != null) throw new InvalidOperationException("User with same document or email already exists.");
 
         return await _repository.CreateUserAsync(user);
     }

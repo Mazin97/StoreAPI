@@ -6,5 +6,5 @@ public interface IStoreRepository
 {
     Task<User> CreateUserAsync(User user);
 
-    Task<User> GetUserByDocumentOrEmailAsync(string document, string email);
+    Task<User> FindUserByDocumentOrEmailAsync(string document, string email);
 }

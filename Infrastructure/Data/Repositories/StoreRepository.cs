@@ -1,13 +1,13 @@
 ﻿using Domain.Interfaces;
 using Domain.Models;
 using Infrastructure.Data.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data.Repositories;
 
 public class StoreRepository(StoreContext context) : IStoreRepository
 {
     private readonly StoreContext _context = context;
-    
 
     public async Task<User> CreateUserAsync(User user)
     {
@@ -17,13 +17,21 @@ public class StoreRepository(StoreContext context) : IStoreRepository
         return user;
     }
 
-    public async Task<User> GetUserByDocumentOrEmailAsync(string document, string email)
+    public async Task<User> FindUserByDocumentOrEmailAsync(string document, string email)
     {
-        //if (!string.IsNullOrEmpty(document))
-        //{
-        //    var user = await _context.(_ => _.Document == document);
-        //}
+        var user = default(User);
 
-        return null;
+        if (!string.IsNullOrEmpty(document))
+        {
+            user = await _context.Users.FirstOrDefaultAsync(_ => _.Document == document);
+            if (user != null) return user;
+        }
+
+        if (!string.IsNullOrEmpty(email))
+        {
+            user = await _context.Users.FirstOrDefaultAsync(_ => _.Email == email);
+        }
+
+        return user;
     }
 }

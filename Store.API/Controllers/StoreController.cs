@@ -6,16 +6,10 @@ namespace StoreAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class StoreController : ControllerBase
+public class StoreController(ILogger<StoreController> logger, IStoreService service) : ControllerBase
 {
-    private readonly IStoreService _service;
-    private readonly ILogger<StoreController> _logger;
-
-    public StoreController(ILogger<StoreController> logger, IStoreService service)
-    {
-        _logger = logger;
-        _service = service;
-    }
+    private readonly IStoreService _service = service;
+    private readonly ILogger<StoreController> _logger = logger;
 
     [HttpPost("create-user")]
     public async Task<IActionResult> CreateUserAsync([FromBody]User user)
