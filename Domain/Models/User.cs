@@ -38,4 +38,17 @@ public sealed class User(string name, string document, string email, string pass
 
         if (Type == UserTypeEnum.None) throw new ArgumentNullException(nameof(Type));
     }
+
+    /// <summary>
+    /// Hashes the current plain-text password and replaces the Password property.
+    /// </summary>
+    public void HashPassword()
+    {
+        Password = PasswordHelper.HashPassword(Password);
+    }
+
+    public void SetId(int id)
+    {
+        Id = id;
+    }
 }

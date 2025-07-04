@@ -1,29 +1,29 @@
 ﻿using Domain.Interfaces;
 using Domain.Models;
-using Microsoft.Extensions.Caching.Distributed;
-using System.Text.Json;
+using Infrastructure.Data.Context;
 
-public class StoreRepository : IStoreRepository
+namespace Infrastructure.Data.Repositories;
+
+public class StoreRepository(StoreContext context) : IStoreRepository
 {
-    private readonly IDistributedCache _cache;
-    private const string UserPrefix = "user:";
-
-    public StoreRepository(IDistributedCache cache)
-    {
-        _cache = cache;
-    }
+    private readonly StoreContext _context = context;
+    
 
     public async Task<User> CreateUserAsync(User user)
     {
-        var key = UserPrefix + user.Id;
-        var data = JsonSerializer.Serialize(user);
-        var options = new DistributedCacheEntryOptions
-        {
-            AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1)
-        };
-
-        await _cache.SetStringAsync(key, data, options);
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync();
 
         return user;
+    }
+
+    public async Task<User> GetUserByDocumentOrEmailAsync(string document, string email)
+    {
+        //if (!string.IsNullOrEmpty(document))
+        //{
+        //    var user = await _context.(_ => _.Document == document);
+        //}
+
+        return null;
     }
 }

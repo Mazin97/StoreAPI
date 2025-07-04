@@ -1,4 +1,7 @@
 using Domain.Interfaces;
+using Infrastructure.Data.Context;
+using Infrastructure.Data.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Service.Store;
 
 namespace StoreAPI;
@@ -13,12 +16,10 @@ public class Program
         builder.Services.AddControllers();
 
         builder.Services.AddScoped<IStoreService, StoreService>();
-        builder.Services.AddSingleton<IStoreRepository, StoreRepository>();
+        builder.Services.AddScoped<IStoreRepository, StoreRepository>();
 
-        builder.Services.AddStackExchangeRedisCache(options =>
-        {
-            options.Configuration = builder.Configuration.GetConnectionString("Redis");
-        });
+        builder.Services.AddDbContext<StoreContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("Postgres")));
 
         var app = builder.Build();
 

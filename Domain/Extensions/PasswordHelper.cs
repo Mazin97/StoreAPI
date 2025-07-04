@@ -1,4 +1,7 @@
-﻿namespace Domain.Extensions;
+﻿using System.Text;
+using System.Security.Cryptography;
+
+namespace Domain.Extensions;
 
 public static class PasswordHelper
 {
@@ -21,5 +24,13 @@ public static class PasswordHelper
         }
 
         return hasUpper && hasLower && hasDigit && hasSpecial;
+    }
+
+    public static string HashPassword(string password)
+    {
+        var bytes = Encoding.UTF8.GetBytes(password);
+        var hash = SHA256.HashData(bytes);
+
+        return Convert.ToHexString(hash);
     }
 }

@@ -20,6 +20,7 @@ public class StoreService : IStoreService
     public async Task<User> CreateUserAsync(User user)
     {
         user.Validate();
+        user.HashPassword();
 
         return await _repository.CreateUserAsync(user);
     }
