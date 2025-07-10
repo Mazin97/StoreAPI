@@ -30,13 +30,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-    <Folder Include="Helpers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\Service\Service.csproj" />
+    <ProjectReference Include="..\Store.API\StoreAPI.csproj" />
   </ItemGroup>
 
 </Project>
