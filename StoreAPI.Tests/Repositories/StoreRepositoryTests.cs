@@ -23,7 +23,7 @@ public class StoreRepositoryTests
         // Arrange
         using var context = GetInMemoryContext();
         var repository = new StoreRepository(context);
-        var user = new User("John Doe", "61399642022", "john.doe@test.com", "MyP@ssW0rD", Domain.Enums.UserTypeEnum.Client);
+        var user = new User("John Doe", "61399642022", "john.doe@test.com", "MyP@ssW0rD", Domain.Enums.UserType.Client);
 
         // Act
         var result = await repository.CreateUserAsync(user);
@@ -44,7 +44,7 @@ public class StoreRepositoryTests
         // Arrange
         using var context = GetInMemoryContext();
         var repository = new StoreRepository(context);
-        var user = new User("John Doe", "61399642022", "john.doe@test.com", "MyP@ssW0rD", Domain.Enums.UserTypeEnum.Client);
+        var user = new User("John Doe", "61399642022", "john.doe@test.com", "MyP@ssW0rD", Domain.Enums.UserType.Client);
         await repository.CreateUserAsync(user);
 
         // Act
@@ -66,7 +66,7 @@ public class StoreRepositoryTests
         // Arrange
         using var context = GetInMemoryContext();
         var repository = new StoreRepository(context);
-        var user = new User("John Doe", "61399642022", "john.doe@test.com", "MyP@ssW0rD", Domain.Enums.UserTypeEnum.Client);
+        var user = new User("John Doe", "61399642022", "john.doe@test.com", "MyP@ssW0rD", Domain.Enums.UserType.Client);
         await repository.CreateUserAsync(user);
 
         // Act

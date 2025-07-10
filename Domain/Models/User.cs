@@ -3,7 +3,7 @@ using Domain.Extensions;
 
 namespace Domain.Models;
 
-public sealed class User(string name, string document, string email, string password, UserTypeEnum type)
+public sealed class User(string name, string document, string email, string password, UserType type)
 {
     public int Id { get; private set; } = default;
 
@@ -15,7 +15,7 @@ public sealed class User(string name, string document, string email, string pass
 
     public string Password { get; private set; } = password;
 
-    public UserTypeEnum Type { get; private set; } = type;
+    public UserType Type { get; private set; } = type;
 
     public double Balance { get; private set; } = default;
 
@@ -36,7 +36,7 @@ public sealed class User(string name, string document, string email, string pass
 
         if (!PasswordHelper.IsValid(Password)) throw new ArgumentException("Invalid password, a password must contains at least 8 characters, a special character, upper and lower case letters");
 
-        if (Type == UserTypeEnum.None) throw new ArgumentNullException(nameof(Type));
+        if (Type == UserType.None) throw new ArgumentNullException(nameof(Type));
     }
 
     /// <summary>

@@ -1,6 +1,6 @@
 ﻿namespace Domain.Enums;
 
-public enum UserTypeEnum
+public enum UserType
 {
     None = 0,
     Client,
