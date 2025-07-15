@@ -17,7 +17,7 @@ public sealed class User(string name, string document, string email, string pass
 
     public UserType Type { get; private set; } = type;
 
-    public double Balance { get; private set; } = default;
+    public decimal Balance { get; private set; } = default;
 
     public void Validate()
     {
@@ -50,5 +50,18 @@ public sealed class User(string name, string document, string email, string pass
     public void SetId(int id)
     {
         Id = id;
+    }
+
+    public void AddBalance(decimal amount)
+    {
+        Balance += amount;
+    }
+
+    public void RemoveBalance(decimal amount)
+    {
+        if (Balance < amount)
+            throw new InvalidOperationException("The balance hasnt the amount tried to be removed.");
+
+        Balance -= amount;
     }
 }

@@ -6,7 +6,7 @@ public interface IStoreService
 {
     Task<User> CreateUserAsync(User user);
 
-    Task AddBalance(double value, int userId);
+    Task AddBalance(decimal value, int userId);
 
-    Task Transfer(double value, int payerId, int payeeId);
+    Task TransferAsync(decimal value, int payerId, int payeeId);
 }

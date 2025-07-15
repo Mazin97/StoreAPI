@@ -17,6 +17,6 @@ public class UserMapping : IEntityTypeConfiguration<User>
         builder.Property(_ => _.Email).HasMaxLength(255).IsRequired();
         builder.Property(_ => _.Password).HasMaxLength(255).IsRequired();
         builder.Property(_ => _.Type).IsRequired();
-        builder.Property(_ => _.Balance).IsRequired().HasDefaultValue(0);
+        builder.Property(_ => _.Balance).IsRequired().HasDefaultValue(0).HasColumnType("decimal(19,4)");
     }
 }

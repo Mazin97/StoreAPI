@@ -9,6 +9,11 @@ public class StoreRepository(StoreContext context) : IStoreRepository
 {
     private readonly StoreContext _context = context;
 
+    public Task<User> GetAsync(int id)
+    {
+        return _context.Users.FirstOrDefaultAsync(_ => _.Id == id);
+    }
+
     public async Task<User> CreateUserAsync(User user)
     {
         _context.Users.Add(user);
@@ -33,5 +38,22 @@ public class StoreRepository(StoreContext context) : IStoreRepository
         }
 
         return user;
+    }
+
+    public async Task<bool> TransferAsync(User payer, User payee)
+    {
+        using (var context = _context)
+        using (var transaction = await context.Database.BeginTransactionAsync())
+        {
+            try
+            {
+                context.Users.UpdateRange(payer, payee);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }
