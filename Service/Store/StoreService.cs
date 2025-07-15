@@ -5,11 +5,13 @@ using System.Text.Json;
 
 namespace Service.Store;
 
-public class StoreService(IStoreRepository repository) : IStoreService
+public class StoreService(IStoreRepository repository,
+    IAuthorizationService authService,
+    INotificationService notificationService) : IStoreService
 {
     private readonly IStoreRepository _repository = repository;
-    private const string _utilsServiceURL = "https://util.devi.tools/api";
-    private const int _maxNotificationRetries = 3;
+    private readonly IAuthorizationService _authService = authService;
+    private readonly INotificationService _notificationService = notificationService;
 
     public async Task<User> CreateUserAsync(User user)
     {
@@ -29,7 +31,7 @@ public class StoreService(IStoreRepository repository) : IStoreService
 
         Transfer.Validate(payer, payee, value);
 
-        bool isTransferAuthorized = await IsTransferAuthorizedAsync();
+        bool isTransferAuthorized = await _authService.IsTransferAuthorizedAsync();
         if (isTransferAuthorized == false)
         {
             throw new InvalidOperationException("Transfer is not authorized. Please try again later");
@@ -59,26 +61,7 @@ public class StoreService(IStoreRepository repository) : IStoreService
         await _repository.UpdateAsync(user);
     }
 
-    private static async Task<bool> IsTransferAuthorizedAsync()
-    {
-        using (var client = new HttpClient())
-        {
-            HttpResponseMessage response = await client.GetAsync($"{_utilsServiceURL}/v2/authorize");
-
-            try
-            {
-                response.EnsureSuccessStatusCode();
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private static async Task<bool> NotifyUsersAboutTransferAsync(User payer, User payee, decimal value)
+    private async Task<bool> NotifyUsersAboutTransferAsync(User payer, User payee, decimal value)
     {
         var payerNotification = Notification.CreateTransferEmailNotification(
             payer.Email,
@@ -90,37 +73,11 @@ public class StoreService(IStoreRepository repository) : IStoreService
             $"You received a transfer of R${value} from {payer.Name}."
         );
 
-        var payerNotificationTask = SendNotificationAsync(payerNotification);
-        var payeeNotificationTask = SendNotificationAsync(payeeNotification);
+        var payerNotificationTask = _notificationService.SendNotificationAsync(payerNotification);
+        var payeeNotificationTask = _notificationService.SendNotificationAsync(payeeNotification);
 
         var results = await Task.WhenAll(payerNotificationTask, payeeNotificationTask);
 
         return results.All(_ => _ == true);
-    }
-
-    private static async Task<bool> SendNotificationAsync(Notification notification)
-    {
-        using (var client = new HttpClient())
-        {
-            for (int i = 0; i < _maxNotificationRetries; i++)
-            {
-                var json = JsonSerializer.Serialize(notification);
-                var data = new StringContent(json, Encoding.UTF8, "application/json");
-
-                HttpResponseMessage response = await client.PostAsync($"{_utilsServiceURL}/v1/notify", data);
-
-                try
-                {
-                    response.EnsureSuccessStatusCode();
-                    return true;
-                }
-                catch (Exception)
-                {
-                    continue;
-                }
-            }
-
-            return false;
-        }
     }
 }

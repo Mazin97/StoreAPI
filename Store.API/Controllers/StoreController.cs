@@ -33,7 +33,7 @@ public class StoreController(ILogger<StoreController> logger, IStoreService serv
     }
 
     [HttpPost("deposit")]
-    public async Task<IActionResult> TransferAsync([FromBody] Deposit deposit)
+    public async Task<IActionResult> DepositAsync([FromBody] Deposit deposit)
     {
         try
         {
