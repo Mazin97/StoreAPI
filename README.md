@@ -86,7 +86,14 @@ curl --request POST \
 
 - No banco de dados preferi usar EF Core por facilidade, porém acredito que pro escopo do desafio poderia ter usado Dapper.
 
+- Como se trata de uma API que envolve transferência monetária achei interessante adotar decimal(19,4) para o tipo do banco de dados que armazena a informação, mas também poderia ter utilizado int e calcular em centavos.
+
 ### Melhorias que poderiam ser implementadas:
 
 - Uma tabela para guardar o histórico de transferências.
 - Aumentar a cobertura dos testes unitários para abranger todo o escopo do projeto.
+
+
+### Rodando o projeto:
+
+- O projeto possui um Dockercompose, então basta rodar "docker-compose build" e depois "docker-compose up". Feito! a API está pronta para ser consumida na porta 8080.
