@@ -20,10 +20,36 @@ public class StoreController(ILogger<StoreController> logger, IStoreService serv
 
             return Ok(new { data = response, error = string.Empty });
         }
+        catch (Exception ex) when (ex is ArgumentException || ex is HttpRequestException || ex is InvalidOperationException)
+        {
+            _logger.LogError("Bad request: {er}", ex.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, new { data = default(User), error = ex.Message });
+        }
         catch (Exception ex)
         {
             _logger.LogError("Internal server error: {er}", ex.Message);
             return StatusCode(StatusCodes.Status500InternalServerError, new { data = default(User), error = ex.Message });
+        }
+    }
+
+    [HttpPost("deposit")]
+    public async Task<IActionResult> TransferAsync([FromBody] Deposit deposit)
+    {
+        try
+        {
+            await _service.DepositAsync(deposit);
+
+            return Ok(new { error = string.Empty });
+        }
+        catch (Exception ex) when (ex is ArgumentException || ex is HttpRequestException || ex is InvalidOperationException)
+        {
+            _logger.LogError("Bad request: {er}", ex.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, new { data = default(Deposit), error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Internal server error: {er}", ex.Message);
+            return StatusCode(StatusCodes.Status500InternalServerError, new { data = default(Deposit), error = ex.Message });
         }
     }
 
@@ -36,10 +62,15 @@ public class StoreController(ILogger<StoreController> logger, IStoreService serv
 
             return Ok(new { error = string.Empty });
         }
+        catch (Exception ex) when (ex is ArgumentException || ex is HttpRequestException || ex is InvalidOperationException)
+        {
+            _logger.LogError("Bad request: {er}", ex.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, new { data = default(Transfer), error = ex.Message });
+        }
         catch (Exception ex)
         {
             _logger.LogError("Internal server error: {er}", ex.Message);
-            return StatusCode(StatusCodes.Status500InternalServerError, new { data = default(User), error = ex.Message });
+            return StatusCode(StatusCodes.Status500InternalServerError, new { data = default(Transfer), error = ex.Message });
         }
     }
 }

@@ -47,6 +47,14 @@ public sealed class User(string name, string document, string email, string pass
         Password = PasswordHelper.HashPassword(Password);
     }
 
+    public void CheckPassword(string password)
+    {
+        if (PasswordHelper.HashPassword(password).Equals(Password) == false)
+        {
+            throw new InvalidOperationException("Invalid password.");
+        }
+    }
+
     public void SetId(int id)
     {
         Id = id;

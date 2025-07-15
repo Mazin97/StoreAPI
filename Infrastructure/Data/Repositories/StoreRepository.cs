@@ -42,18 +42,26 @@ public class StoreRepository(StoreContext context) : IStoreRepository
 
     public async Task<bool> TransferAsync(User payer, User payee)
     {
-        using (var context = _context)
-        using (var transaction = await context.Database.BeginTransactionAsync())
+        using (var transaction = await _context.Database.BeginTransactionAsync())
         {
             try
             {
-                context.Users.UpdateRange(payer, payee);
+                _context.Users.UpdateRange(payer, payee);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
                 return true;
             }
             catch (Exception)
             {
+                await transaction.RollbackAsync();
                 return false;
             }
         }
+    }
+
+    public async Task UpdateAsync(User user)
+    {
+        _context.Update(user);
+        await _context.SaveChangesAsync();
     }
 }

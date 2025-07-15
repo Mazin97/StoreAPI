@@ -1,4 +1,5 @@
-﻿using Domain.Interfaces;
+﻿using Domain.Enums;
+using Domain.Interfaces;
 using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -25,7 +26,7 @@ public class StoreControllerTests
     [TestMethod]
     public async Task CreateUserAsync_WithValidUser_ReturnsOk()
     {
-        var user = new User("Test", "52998224725", "test@mail.com", "aA1@Strong", Domain.Enums.UserType.Client);
+        var user = new User("Test", "52998224725", "test@mail.com", "aA1@Strong", UserType.Customer);
         _mockService.Setup(s => s.CreateUserAsync(user)).ReturnsAsync(user);
 
         var result = await _controller.CreateUserAsync(user) as OkObjectResult;
@@ -37,7 +38,7 @@ public class StoreControllerTests
     [TestMethod]
     public async Task CreateUserAsync_WhenServiceThrows_Returns500()
     {
-        var user = new User("Test", "52998224725", "test@mail.com", "aA1@Strong", Domain.Enums.UserType.Client);
+        var user = new User("Test", "52998224725", "test@mail.com", "aA1@Strong", UserType.Customer);
         _mockService.Setup(s => s.CreateUserAsync(user)).ThrowsAsync(new Exception("fail"));
 
         var result = await _controller.CreateUserAsync(user) as ObjectResult;

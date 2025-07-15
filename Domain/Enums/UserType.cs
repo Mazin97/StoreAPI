@@ -3,6 +3,6 @@
 public enum UserType
 {
     None = 0,
-    Client,
+    Customer,
     Owner
 }

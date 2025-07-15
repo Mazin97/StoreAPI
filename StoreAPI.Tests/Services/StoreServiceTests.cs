@@ -1,4 +1,5 @@
-﻿using Domain.Interfaces;
+﻿using Domain.Enums;
+using Domain.Interfaces;
 using Domain.Models;
 using Moq;
 using Service.Store;
@@ -22,7 +23,7 @@ public class StoreServiceTests
     public async Task CreateUser_ReturnsUser_WhenCreated()
     {
         // Arrange
-        var expectedUser = new User("John Doe", "61399642022", "john.doe@test.com", "MyP@ssW0rD", Domain.Enums.UserType.Client);
+        var expectedUser = new User("John Doe", "61399642022", "john.doe@test.com", "MyP@ssW0rD", UserType.Customer);
 
         _mockRepository.Setup(r => r.CreateUserAsync(It.IsAny<User>()))
             .ReturnsAsync(expectedUser);
@@ -45,7 +46,7 @@ public class StoreServiceTests
     public async Task CreateUser_ThrowsException_WhenAlreadyExists()
     {
         // Arrange
-        var user = new User("John Doe", "61399642022", "john.doe@test.com", "MyP@ssW0rD", Domain.Enums.UserType.Client);
+        var user = new User("John Doe", "61399642022", "john.doe@test.com", "MyP@ssW0rD", UserType.Customer);
 
         _mockRepository.Setup(r => r.FindUserByDocumentOrEmailAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(user);

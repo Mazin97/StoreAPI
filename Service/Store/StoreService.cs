@@ -11,11 +11,6 @@ public class StoreService(IStoreRepository repository) : IStoreService
     private const string _utilsServiceURL = "https://util.devi.tools/api";
     private const int _maxNotificationRetries = 3;
 
-    public Task AddBalance(decimal value, int userId)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<User> CreateUserAsync(User user)
     {
         user.Validate();
@@ -30,7 +25,7 @@ public class StoreService(IStoreRepository repository) : IStoreService
     public async Task TransferAsync(decimal value, int payerId, int payeeId)
     {
         var payer = await _repository.GetAsync(payerId);
-        var payee = await _repository.GetAsync(payerId);
+        var payee = await _repository.GetAsync(payeeId);
 
         Transfer.Validate(payer, payee, value);
 
@@ -50,6 +45,18 @@ public class StoreService(IStoreRepository repository) : IStoreService
         }
 
         await NotifyUsersAboutTransferAsync(payer, payee, value);
+    }
+
+    public async Task DepositAsync(Deposit deposit)
+    {
+        deposit.Validate();
+
+        var user = await _repository.FindUserByDocumentOrEmailAsync(deposit.Document, deposit.Email) ?? throw new ArgumentNullException("User not found.");
+
+        user.CheckPassword(deposit.Password);
+        user.AddBalance(deposit.Value);
+
+        await _repository.UpdateAsync(user);
     }
 
     private static async Task<bool> IsTransferAuthorizedAsync()

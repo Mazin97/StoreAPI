@@ -16,7 +16,7 @@ public class Notification
         {
             Message = message,
             Recipient = recipient,
-            Type = Domain.Enums.NotificationType.Email
+            Type = NotificationType.Email
         };
     }
 }
